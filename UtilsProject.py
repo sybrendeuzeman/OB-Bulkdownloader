@@ -1,7 +1,7 @@
 import Models as m
 import Utilities as u
 from pathlib import Path
-
+import tkinter.filedialog as fd
 import xml.etree.ElementTree as ET
 import re
 import pysftp
@@ -13,7 +13,10 @@ import pysftp
 
 class DatabaseDocuments:
     # Initialize database
-    def __init__(self, database):
+    def __init__(self, database = None):
+        if database is None:
+            database = fd.askopenfilename(filetypes = [('Database-file', '*.db')])
+
         # Setup connection and tables (if necessary)
         m.Schema(database = database)
 
@@ -30,18 +33,18 @@ class DatabaseDocuments:
         if (not exist):
             self.db.add_document(list_entry)
 
-    def add_keyword(self, list_entry, keyword):
-        exist = self.db.exist_keyword(list_entry[1], keyword)
+    def add_keyword(self, list_entry, query):
+        exist = self.db.exist_keyword(list_entry[1], query)
         if (not exist):
-            self.db.add_keyword(list_entry[1], keyword)
+            self.db.add_keyword(list_entry[1], query)
 
-    def add_records(self, data, keyword):
+    def add_records(self, data, query):
         data_in =list(map(find_variables, data) ) 
         for list_entry in data_in:
             self.add_record(list_entry)
-            self.add_keyword(list_entry, keyword)
+            self.add_keyword(list_entry, query)
 
-    # Manage downloads
+    # Manage download indicators
     def set_downloaded(self, identifier, YF):
         self.db.set_downloaded(identifier, YF)
 
@@ -153,7 +156,8 @@ def find_variables(record):
 ###############
 
 def get_xml_query (dict_query, startRecord):
-    return u.getxml(make_url(dict_query, startRecord))
+    url, query = make_url(dict_query, startRecord)
+    return u.getxml(url), query
 
 def make_url (dict_query, startRecord):
     # Make the query
@@ -168,16 +172,25 @@ def make_url (dict_query, startRecord):
     # Combine query
     url = url_start + url_startrecord + url_maxrecords + url_query
     
-    return url
+    return url, query
 
 def make_query (dict_query):
-    start = True
-    for key, value in dict_query.items():
-        # Only at start, the query should not start with an 'AND'
-        if start == True:
-            query = '(' + key + ' = "' + value + '")' 
-            start = False
+    start_and = True
+    for key, values in dict_query.items():
+        if start_and == True:
+            query = '(' 
+            start_and = False
         else:
-            query = query + 'AND' +  '(' + key + ' = "' + value + '" )' 
+            query = query + 'AND(' 
+
+        start_or = True
+        for value in values:
+            # Only at start, the query should not start with an 'AND'
+            if start_or == True:
+                query = query + '(' + key + ' = "' + value + '")' 
+                start_or = False
+            else:
+                query = query + 'OR' +  '(' + key + ' = "' + value + '" )' 
+        query = query + ')'
     return query
 

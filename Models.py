@@ -23,7 +23,8 @@ class Schema:
             vergaderjaar TEXT,
             locationURI TEXT,
             url TEXT,
-            downloaded TEXT default 'N'
+            downloaded TEXT default 'N',
+            date_added TEXT default (date('now'))
         );
         """
         self.conn.execute(query)
@@ -60,7 +61,8 @@ class DocumentModel:
             ondernummer,
             vergaderjaar,
             locationURI,
-            url
+            url,
+            date_added
         )
         values (?, ?, ?, ?, ?, ?, ?, ?, ? ?, ?)
         """,

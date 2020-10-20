@@ -2,16 +2,14 @@ import UtilsProject as up
 import os
 from pathlib import Path
 
-def find_and_add_dossiers(db, keyword, dict_query):
-    print(keyword)
-  
+def find_and_add_dossiers(db, dict_query):
     start_entry = 0
     newentries = True
     
     while newentries:
         
-        xml_return = up.get_xml_query(dict_query, start_entry)
-        db.add_records(xml_return[2], keyword)
+        xml_return, query = up.get_xml_query(dict_query, start_entry)
+        db.add_records(xml_return[2], query)
                 
         next_entry = xml_return.find('{http://www.loc.gov/zing/srw/}nextRecordPosition')
         
@@ -24,8 +22,8 @@ def find_and_add_dossiers(db, keyword, dict_query):
 
 
 
-def download_files (db, dir_files):
-    to_download = db.show_to_download('F')
+def download_files (db, dir_files, downloaded = 'N'):
+    to_download = db.show_to_download(downloaded)
     len_todownload = len(to_download)
     
     dir_path = Path(dir_files)

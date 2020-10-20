@@ -2,7 +2,7 @@ import UtilsProject as up
 import wrappers as w
 
 # Configure to right "metadata-database"
-db = up.DatabaseDocuments("voorbeeld.db")
+db = up.DatabaseDocuments()
 
 # Geef de keywords op waar naar gezocht moet worden
 keywords = [
