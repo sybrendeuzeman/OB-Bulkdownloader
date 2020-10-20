@@ -71,7 +71,21 @@ class DocumentModel:
     def select_all(self):
         return self.conn.execute(
         """
-        SELECT *
+        SELECT  
+            id,
+            title,
+            identifier,
+            type,
+            creator,
+            date,
+            subrubriek,
+            dossiernummer,
+            ondernummer,
+            vergaderjaar,
+            locationURI,
+            url,
+            downloaded,
+            date_added
         FROM documenten
         """
         )
@@ -79,7 +93,21 @@ class DocumentModel:
     def select_to_download(self, downloaded):
         return self.conn.execute(
             """
-            SELECT *
+            SELECT
+                id,
+                title,
+                identifier,
+                type,
+                creator,
+                date,
+                subrubriek,
+                dossiernummer,
+                ondernummer,
+                vergaderjaar,
+                locationURI,
+                url,
+                downloaded,
+                date_added
             FROM documenten
             WHERE 
                 downloaded = ?

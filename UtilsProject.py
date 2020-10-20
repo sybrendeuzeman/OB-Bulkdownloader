@@ -97,7 +97,7 @@ class DatabaseDocuments:
             with pysftp.Connection(host, username = 'anonymous', password = 'anonymous', cnopts=cnopts) as sftp:
                 file_local = dir_local / filename
                 print(file_local)
-                sftp.get(str(stuk_url), dir_local / filename)
+                sftp.get(str(stuk_url), str(dir_local / filename))
             self.set_downloaded(db_entry['identifier'], 'Y')
         except:
             self.set_downloaded(db_entry['identifier'], 'F')
