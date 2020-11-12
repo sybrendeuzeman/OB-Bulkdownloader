@@ -69,6 +69,13 @@ class DatabaseDocuments:
             return [dict(row) for row in result.fetchall()]
         except:
             print('No table returned from query')
+
+    def execute_many_query(self, query, values):
+        result = self.db.execute_many_query(query, values)
+        try:
+            return [dict(row) for row in result.fetchall()]
+        except:
+            print('No table returned from query')
     
     # Download files to the system
     def downloadFile (self, db_entry, dir_local):
@@ -96,7 +103,6 @@ class DatabaseDocuments:
         try:
             with pysftp.Connection(host, username = 'anonymous', password = 'anonymous', cnopts=cnopts) as sftp:
                 file_local = dir_local / filename
-                print(file_local)
                 sftp.get(str(stuk_url), str(dir_local / filename))
             self.set_downloaded(db_entry['identifier'], 'Y')
         except:
@@ -104,6 +110,8 @@ class DatabaseDocuments:
             print("Fail")
             
         self.commit_db()
+
+    # Parsing XML
 
 
 ###############
@@ -155,24 +163,21 @@ def find_variables(record):
 # Getting XML #
 ###############
 
-def get_xml_query (dict_query, startRecord):
-    url, query = make_url(dict_query, startRecord)
+def get_xml_query (query, startRecord):
+    url = make_url(query, startRecord)
     return u.getxml(url), query
 
-def make_url (dict_query, startRecord):
-    # Make the query
-    query = make_query(dict_query)
-    
-    # Make query parts
+def make_url (query, startRecord):
+     # Make query parts
     url_start = "https://zoek.officielebekendmakingen.nl/sru/Search?version=1.2&operation=searchRetrieve&x-connection=cvdr"
-    url_maxrecords = "&maximumRecords=100"
+    url_maxrecords = "&maximumRecords=1000"
     url_startrecord = "&startRecord=" + str(startRecord) 
     url_query = '&query=' + query
     
     # Combine query
     url = url_start + url_startrecord + url_maxrecords + url_query
     
-    return url, query
+    return url
 
 def make_query (dict_query):
     start_and = True

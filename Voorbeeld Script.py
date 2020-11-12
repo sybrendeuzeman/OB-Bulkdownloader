@@ -1,32 +1,37 @@
 import UtilsProject as up
 import wrappers as w
+import pandas as pd
 
 # Configure to right "metadata-database"
-db = up.DatabaseDocuments('voorbeeld.db')
+db = up.DatabaseDocuments('../voorbeeld.db')
 
 # Geef de keywords op waar naar gezocht moet worden
 keywords = [
     'dodo',
-    'mammoet',
-    'tijger'
+    'mammoet'
 ]
 
 # Geef vervaardigers van de documenten op
 creators = [
     'Tweede Kamer',
-    'Eerste Kamer'
+    'Eerste Kamer',
+    'Verenigde Vergadering'
 ]
 
-# Zoek naar keywords en vervaardigers binnen handelingen
-for keyword in keywords:
-    for creator in creators:
-        dict_query = {
-            'keyword' : keyword,
-            'creator' : creator,
-            'type' : 'handeling'
-        }
-        w.find_and_add_dossiers(db, keyword, dict_query)       
+# Zoek naar keywords en vervaardigers binnen het type handelingen
+dict_query = {
+    'keyword' : keywords,
+    'creator' : creators,
+    'type' : ['handeling', 'kamerstuk']
+}
+
+query = up.make_query(dict_query)
+print(query)
+w.find_and_add_dossiers(db, query)       
 
 # Download de geselecteerde files
-w.download_files(db, 'C:/Werk/TK/Voorbeeld')
+print("Te downloaden documenten:", len(db.show_to_download('N')))
 
+w.download_files(db, '../Voorbeeld')
+
+pd.DataFrame(db.show_all()).to_excel('../overzicht_stukken.xlsx')

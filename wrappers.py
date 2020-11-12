@@ -1,16 +1,23 @@
 import UtilsProject as up
 import os
 from pathlib import Path
+import time
 
 def find_and_add_dossiers(db, dict_query):
     start_entry = 0
     newentries = True
     
     while newentries:
-        
+        start = time.time()
         xml_return, query = up.get_xml_query(dict_query, start_entry)
+        end = time.time()
+        print("Get XML: ", end - start)
+
+        start = time.time()
         db.add_records(xml_return[2], query)
-                
+        end = time.time()
+        print("Add records: ", end - start)
+
         next_entry = xml_return.find('{http://www.loc.gov/zing/srw/}nextRecordPosition')
         
         if next_entry is None:

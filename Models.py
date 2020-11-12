@@ -61,8 +61,7 @@ class DocumentModel:
             ondernummer,
             vergaderjaar,
             locationURI,
-            url,
-            date_added
+            url
         )
         values (?, ?, ?, ?, ?, ?, ?, ?, ? ?, ?)
         """,
@@ -225,3 +224,6 @@ class DocumentModel:
 
     def execute_query(self, query):
         return self.conn.execute(query)
+
+    def execute_many_query(self, query, values):
+        return self.conn.executemany(query, values)
