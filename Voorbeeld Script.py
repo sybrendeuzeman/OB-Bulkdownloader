@@ -31,7 +31,9 @@ w.find_and_add_dossiers(db, query)
 
 # Download de geselecteerde files
 print("Te downloaden documenten:", len(db.show_to_download('N')))
-
 w.download_files(db, '../Voorbeeld')
+
+# Voor XML gebruik je de volgende code
+#w.download_files(db, '../Voorbeeld', extension = 'xml')
 
 pd.DataFrame(db.show_all()).to_excel('../overzicht_stukken.xlsx')

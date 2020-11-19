@@ -29,7 +29,7 @@ def find_and_add_dossiers(db, dict_query):
 
 
 
-def download_files (db, dir_files, downloaded = 'N'):
+def download_files (db, dir_files, downloaded = 'N', extension = 'pdf'):
     to_download = db.show_to_download(downloaded)
     len_todownload = len(to_download)
     
@@ -42,6 +42,6 @@ def download_files (db, dir_files, downloaded = 'N'):
     for entry in to_download :
         counter += 1
         print(counter, '/', len_todownload, " : ",  entry['identifier'])
-        db.downloadFile(entry, dir_path)
+        db.downloadFile(entry, dir_path, extension=extension)
     
     print('Finished')

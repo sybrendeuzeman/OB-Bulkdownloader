@@ -78,7 +78,7 @@ class DatabaseDocuments:
             print('No table returned from query')
     
     # Download files to the system
-    def downloadFile (self, db_entry, dir_local):
+    def downloadFile (self, db_entry, dir_local, extension = 'pdf'):
         # Get important information
         locationURI = db_entry['locationURI']
         identifier = db_entry['identifier']
@@ -87,7 +87,7 @@ class DatabaseDocuments:
         actual_url = Path(re.sub('ftps://bestanden.officielebekendmakingen.nl/', '', locationURI))
 
         # Filename
-        filename = identifier + ".pdf"
+        filename = identifier + "." + extension
 
         # Make URLs to document of interest.
         stuk_url = actual_url / filename           
